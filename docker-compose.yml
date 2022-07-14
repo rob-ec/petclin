@@ -1,0 +1,51 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+#        USER_ID: 1000 # find yours with `id -u`
+#        GROUP_ID: 1000 # find yours with `id -g`
+        PHP_INI_MODEL: '/usr/local/etc/php/php.ini-development'
+        PHP_INI_LAMPP: '/usr/local/etc/php/conf.d/docker-lampp-dev.ini'
+#        APACHE_CONF_FILE: '/etc/apache2/sites-available/000-default.conf' # HTTPS Conf. File
+    container_name: 'phpserver'
+    environment:
+      - ALLOW_OVERRIDE=true
+    links:
+      - db
+    volumes:
+      - .:/var/www/html/
+    ports:
+      - "80:80"
+#      - "443:443"    # HTTPS PORT
+  db:
+    image: mariadb
+    container_name: 'phpserver-database'
+    restart: always
+#    volumes:
+#      - ./database/data/mysql:/var/lib/mysql
+#      - ./database/logs/mysql:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'rootpass'
+      MYSQL_DATABASE: petclin
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: 'devpass'
+    ports:
+      - "3606:3606"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: 'phpserver-phpmyadmin'
+    depends_on:
+      - db
+    restart: always
+    environment:
+      PMA_PORT: 3306
+      PMA_USER: dev
+      PMA_PASSWORD: 'devpass'
+      MYSQL_ROOT_PASSWORD: 'rootpass'
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: 'devpass'
+    ports:
+      - "8900:80"
