@@ -8,10 +8,10 @@ class Conexao{
 
 
     public function __construct() {
-        $this->url = "127.0.0.1";
-        $this->usuario = "root";
-        $this->senha = '';
-        $this->baseDeDados = 'clinica_pet';
+        $this->url = "db";
+        $this->usuario = "dev";
+        $this->senha = 'devpass';
+        $this->baseDeDados = 'petclin';
     }
 
     public function getConexao() {

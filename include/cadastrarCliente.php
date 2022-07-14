@@ -23,7 +23,17 @@ if (isset($_SESSION['administrador'])){
                     <div id="cpf" class="form-text"></div>
                 </div>
                
-                
+                <div class="mb-3">
+                    <label for="endereco" class="form-label">Endereço</label>
+                    <input type="text" class="form-control" id="endereco-cliente" aria-describedby="enderecoHelp" name="enderecoCliente" >
+                    <div id="enderecoHelp" class="form-text"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="celular" class="form-label">Celular</label>
+                    <input type="text" class="form-control" id="celular-cliente" aria-describedby="celularHelp" name="celularCliente" >
+                    <div id="celularHelp" class="form-text"></div>
+                </div>
                 
                 <input type="hidden" name="formCadastrarCliente">
                 <button type="submit" class="btn btn-primary">Submit</button>

@@ -1,37 +1,62 @@
 <?php
-include("../classes/Conexao.php");
-include("../classes/Utilidades.php");
+include "../classes/Conexao.php";
+include "../classes/Utilidades.php";
 class Cliente
 {
 
     private $nome;
     private $cpf;
     private $email;
+    private $endereco;
+    private $celular;
     private $id;
     private $utilidades;
 
     public $retornoBD;
     public $conexaoBD;
 
-    public function  __construct()
+    public function __construct()
     {
         $objConexao = new Conexao();
         $this->conexaoBD = $objConexao->getConexao();
         $this->utilidades = new Utilidades();
     }
 
+    public function getEndereco()
+    {
+        return $this->endereco;
+    }
+
+    public function setEndereco($endereco)
+    {
+        return $this->endereco = $endereco;
+    }
+
+    public function getCelular()
+    {
+        return $this->celular;
+    }
+
+    public function setCelular($celular)
+    {
+        return $this->celular = $celular;
+    }
+
     public function getId()
     {
         return $this->id;
     }
+
     public function getNome()
     {
         return $this->nome;
     }
+
     public function getCPF()
     {
         return $this->cpf;
     }
+
     public function getEmail()
     {
         return $this->email;
@@ -42,16 +67,19 @@ class Cliente
         //validacao
         return $this->email = $email;
     }
+
     public function setNome($nome)
     {
         //validacao
-        return $this->nome =  mb_strtoupper($nome, 'UTF-8');
+        return $this->nome = mb_strtoupper($nome, 'UTF-8');
     }
+
     public function setCPF($cpf)
     {
         //validacao
         return $this->cpf = $cpf;
     }
+
     public function setId($id)
     {
         //validacao
@@ -63,9 +91,9 @@ class Cliente
 
         if ($this->getCPF() != null) {
 
-            $interacaoMySql = $this->conexaoBD->prepare("INSERT INTO cliente (nome_cliente, email_cliente, cpf_cliente) 
-            VALUES (?, ?, ?)");
-            $interacaoMySql->bind_param('sss', $this->getNome(), $this->getEmail(), $this->getCPF());
+            $interacaoMySql = $this->conexaoBD->prepare("INSERT INTO cliente (nome_cliente, email_cliente, cpf_cliente, endereco_cliente, celular_cliente)
+            VALUES (?, ?, ?, ?, ?)");
+            $interacaoMySql->bind_param('sss', $this->getNome(), $this->getEmail(), $this->getCPF(), $this->getEndereco(), $this->getCelular());
             $retorno = $interacaoMySql->execute();
 
             $id = mysqli_insert_id($this->conexaoBD);
@@ -80,9 +108,9 @@ class Cliente
 
         if ($this->getId() != null) {
 
-            $interacaoMySql = $this->conexaoBD->prepare("UPDATE  cliente set  nome_cliente=?, email_cliente=?, cpf_cliente=? 
+            $interacaoMySql = $this->conexaoBD->prepare("UPDATE  cliente set  nome_cliente=?, email_cliente=?, cpf_cliente=?, endereco_cliente=?, celular_cliente=?
             where id_cliente=?");
-            $interacaoMySql->bind_param('sssi', $this->getNome(), $this->getEmail(), $this->getCPF(), $this->getId());
+            $interacaoMySql->bind_param('sssi', $this->getNome(), $this->getEmail(), $this->getCPF(), $this->getEndereco(), $this->getCelular(), $this->getId());
             $retorno = $interacaoMySql->execute();
             if ($retorno === false) {
                 trigger_error($this->conexaoBD->error, E_USER_ERROR);
@@ -101,11 +129,19 @@ class Cliente
         $sql = "select * from cliente where id_cliente=$id";
         $this->retornoBD = $this->conexaoBD->query($sql);
     }
+
     public function selecionarPorCPF($cpf)
     {
         $sql = "select * from cliente where cpf_cliente=$cpf";
         $this->retornoBD = $this->conexaoBD->query($sql);
     }
+
+    public function selecionarPorNome($nome)
+    {
+        $sql = "select * from cliente where nome_cliente=$nome";
+        $this->retornoBD = $this->conexaoBD->query($sql);
+    }
+
     public function selecionarClientes()
     {
         $sql = "select * from cliente order by data_cadastro_cliente DESC";
